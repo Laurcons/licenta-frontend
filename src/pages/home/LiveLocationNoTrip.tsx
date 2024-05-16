@@ -1,9 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Card } from 'react-bootstrap';
 import { useGeolocated } from 'react-geolocated';
-import { gtfsdb } from './lib/dexie/dexie';
+import { gtfsdb } from '../../lib/dexie/dexie';
 import { useMemo } from 'react';
-import { CoordUtil } from './lib/coord.util';
+import { CoordUtil } from '../../lib/coord.util';
 
 export function LiveLocationNoTrip() {
   const { coords } = useGeolocated({
@@ -32,11 +32,12 @@ export function LiveLocationNoTrip() {
 
   return (
     <>
-      <Card>
-        <Card.Header>Live Location</Card.Header>
+      <Card className="mb-3">
         <Card.Body>
+          <h1 className="fs-3">Live location</h1>
           You are near {closestStop?.stop_name} (
-          {Math.floor((closestStop?.distance ?? 0) * 1000)} m)
+          {Math.floor((closestStop?.distance ?? 0) * 1000)} m away), and your
+          position is accurate to within {coords?.accuracy} m.
         </Card.Body>
       </Card>
     </>

@@ -1,0 +1,16 @@
+
+@keyframes pulsating {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0;
+    animation-timing-function: steps(1, end);
+  }
+}
+
+.pulsating {
+  animation: pulsating 2s infinite ease-out;
+}

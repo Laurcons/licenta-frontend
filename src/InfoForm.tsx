@@ -13,7 +13,7 @@ export function InfoForm({
   onTrip?: (t?: DxTrip) => void;
   onDestination?: (d?: DxStop & { stop_time: DxStopTime }) => void;
 }) {
-  const [trainNum, setTrainNum] = useState('');
+  const [trainNum, setTrainNum] = useState('3088');
   const [destinationId, setDestinationId] = useState<string | null>(null);
 
   const db = useLiveQuery(async () => {

@@ -6,7 +6,8 @@ import { DxRoute } from './models/dx-route';
 import { DxStopTime } from './models/dx-stopTime';
 import { DxStop } from './models/dx-stop';
 import { DxTrip } from './models/dx-trip';
-import { DxSetting } from './models/dx-setting';
+import { Setting } from './models/setting';
+import { UserTrip } from './models/user-trip';
 
 export class GtfsDatabase extends Dexie {
   agency!: Dexie.Table<DxAgency, string>;
@@ -16,12 +17,9 @@ export class GtfsDatabase extends Dexie {
   stop_times!: Dexie.Table<DxStopTime, string>;
   stops!: Dexie.Table<DxStop, string>;
   trips!: Dexie.Table<DxTrip, string>;
-  settings!: Dexie.Table<DxSetting, string>;
 
   constructor() {
-    super('mersultrenurilor', {
-      // autoOpen: false,
-    });
+    super('mersultrenurilor');
     this.version(1).stores({
       agency: 'agency_id',
       calendar_dates: 'service_id',
@@ -30,8 +28,19 @@ export class GtfsDatabase extends Dexie {
       stop_times: '[trip_id+stop_id+stop_sequence],arrival_time',
       stops: 'stop_id,stop_name',
       trips: 'trip_id,route_id,service_id',
-      // non-gtfs:
+    });
+  }
+}
+
+export class LocalDatabase extends Dexie {
+  settings!: Dexie.Table<Setting, string>;
+  userTrips!: Dexie.Table<UserTrip, number>;
+
+  constructor() {
+    super('localdatabase');
+    this.version(1).stores({
       settings: 'key',
+      userTrips: '++id,trainNum,trackStartedAt',
     });
   }
 }
@@ -47,8 +56,9 @@ export interface GtfsFileNameMap {
 }
 
 export const gtfsdb = new GtfsDatabase();
+export const localdb = new LocalDatabase();
 
-gtfsdb.on('close', console.error);
-gtfsdb.on('blocked', console.error);
-gtfsdb.on('populate', console.error);
-gtfsdb.on('versionchange', console.error);
+// gtfsdb.on('close', console.error);
+// gtfsdb.on('blocked', console.error);
+// gtfsdb.on('populate', console.error);
+// gtfsdb.on('versionchange', console.error);

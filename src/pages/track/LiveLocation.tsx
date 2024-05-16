@@ -1,19 +1,19 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { DxTrip } from './lib/dexie/models/dx-trip';
-import { gtfsdb } from './lib/dexie/dexie';
+import { DxTrip } from '../../lib/dexie/models/dx-trip';
+import { gtfsdb } from '../../lib/dexie/dexie';
 import { Card } from 'react-bootstrap';
 import { useGeolocated } from 'react-geolocated';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CoordUtil } from './lib/coord.util';
-import { DxStop } from './lib/dexie/models/dx-stop';
-import { DxStopTime } from './lib/dexie/models/dx-stopTime';
-import { Timetable } from './Timetable';
+import { CoordUtil } from '../../lib/coord.util';
+import { DxStop } from '../../lib/dexie/models/dx-stop';
+import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
+import { Timetable } from '../../Timetable';
 
 export function LiveLocation({
-  trip,
+  trainNum,
   destination,
 }: {
-  trip: DxTrip;
+  trainNum: string;
   destination?: DxStop & { stop_time: DxStopTime };
 }) {
   const { coords } = useGeolocated({
@@ -25,6 +25,11 @@ export function LiveLocation({
   const [visitedStops, setVisitedStops] = useState<string[]>([]);
 
   const db = useLiveQuery(async () => {
+    if (!trainNum) return undefined;
+    const trip = await gtfsdb.trips.get({
+      trip_id: trainNum,
+    });
+    if (!trip) return undefined;
     const stopTimes = await gtfsdb.stop_times
       .where({
         trip_id: trip.trip_id,
@@ -46,7 +51,7 @@ export function LiveLocation({
       stopTimes,
       stops,
     };
-  }, [trip]);
+  }, [trainNum]);
 
   const stations = useMemo(() => {
     if (!db?.stops?.length) return;
@@ -114,7 +119,7 @@ export function LiveLocation({
       left: prevStationRef.current.offsetLeft,
       behavior: 'smooth',
     });
-  }, [trip, stations]);
+  }, [db, stations]);
 
   return (
     <>

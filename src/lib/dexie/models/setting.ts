@@ -1,5 +1,5 @@
 // non-gtfs
-export interface DxSetting {
+export interface Setting {
   key: string;
   value: string;
 }
