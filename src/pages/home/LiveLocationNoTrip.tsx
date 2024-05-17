@@ -37,7 +37,8 @@ export function LiveLocationNoTrip() {
           <h1 className="fs-3">Live location</h1>
           You are near {closestStop?.stop_name} (
           {Math.floor((closestStop?.distance ?? 0) * 1000)} m away), and your
-          position is accurate to within {coords?.accuracy} m.
+          position is accurate to within{' '}
+          {!!coords && Math.floor(coords?.accuracy * 100) / 100} m.
         </Card.Body>
       </Card>
     </>

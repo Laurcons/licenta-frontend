@@ -1,8 +1,8 @@
 import { Badge, Card, Table } from 'react-bootstrap';
-import { DxStop } from './lib/dexie/models/dx-stop';
+import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { useEffect, useMemo, useState } from 'react';
-import { DxStopTime } from './lib/dexie/models/dx-stopTime';
-import { DxUtils } from './lib/dexie/dx.utils';
+import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
+import { DxUtils } from '../../lib/dexie/dx.utils';
 import { TimeWithDelay } from './TimeWithDelay';
 import dayjs from 'dayjs';
 
