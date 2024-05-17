@@ -16,13 +16,19 @@ export function LiveLocation({
   trainNum: string;
   destination?: DxStop & { stop_time: DxStopTime };
 }) {
-  const { coords } = useGeolocated({
+  const [lastSnappedToStation, setLastSnappedToStation] = useState<
+    (DxStop & { stop_time: DxStopTime }) | undefined
+  >(undefined);
+
+  const prevStationRef = useRef<HTMLDivElement>(null);
+  const stationListRef = useRef<HTMLDivElement>(null);
+
+  const { coords: userCoords } = useGeolocated({
     positionOptions: {
       enableHighAccuracy: true,
     },
     watchPosition: true,
   });
-  const [visitedStops, setVisitedStops] = useState<string[]>([]);
 
   const db = useLiveQuery(async () => {
     if (!trainNum) return undefined;
@@ -53,48 +59,78 @@ export function LiveLocation({
     };
   }, [trainNum]);
 
-  const stations = useMemo(() => {
+  // closest two stations
+  // (basically, stations that are the
+  //  ends of the closest station-segment to us)
+  const closestStations = useMemo(() => {
     if (!db?.stops?.length) return;
-    if (!coords) return;
-    const latestVisitedStopSequence = Math.max(
-      ...visitedStops.map(
-        (vsid) =>
-          db.stops.find((s) => s.stop_id === vsid)!.stop_time.stop_sequence
-      ),
-      0
+    if (!userCoords) return;
+    console.log(
+      db.stops.reduce(
+        (lines, stop) => lines + `[${stop.stop_lat},${stop.stop_lon}],\n`,
+        ''
+      )
     );
     return (
       db.stops
+        .slice() // make copy that we can sort
+        .sort((a, b) => a.stop_time.stop_sequence - b.stop_time.stop_sequence)
+        // create a list of pairings of consecutive stations
+        .reduce<{
+          pairings: {
+            pair: (DxStop & { stop_time: DxStopTime })[];
+            dist: number;
+          }[];
+          last?: DxStop & { stop_time: DxStopTime };
+        }>(
+          (state, curr) => {
+            if (!state.last) return { ...state, last: curr };
+            return {
+              pairings: [
+                ...state.pairings,
+                {
+                  pair: [state.last, curr],
+                  dist: CoordUtil.distToSegment(userCoords, [
+                    {
+                      latitude: state.last.stop_lat,
+                      longitude: state.last.stop_lon,
+                    },
+                    { latitude: curr.stop_lat, longitude: curr.stop_lon },
+                  ]),
+                },
+              ],
+              last: curr,
+            };
+          },
+          { pairings: [], last: undefined }
+        )
+        // we do not care about the .last element
+        .pairings // now find the pairing with the smallest distance and return it
+        .reduce((minPairing, pairing) => {
+          console.log(
+            `leg ${pairing.pair[0].stop_name} to ${pairing.pair[1].stop_name} distance ${pairing.dist}`
+          );
+          if (pairing.dist < minPairing.dist) return pairing;
+          return minPairing;
+        })
+        // prettier-ignore
+        .pair // calculate distance to each of these (two) stations
         .map((stop) => ({
           ...stop,
           distance: CoordUtil.distance(
             { latitude: stop.stop_lat, longitude: stop.stop_lon },
-            coords
+            userCoords
           ),
         }))
-        // do not consider stations that are visited (apart from latest one)
-        .filter(
-          (stop) => stop.stop_time.stop_sequence >= latestVisitedStopSequence
-        )
-        .reduce<(DxStop & { distance: number; stop_time: DxStopTime })[]>(
-          (mins, curr) => {
-            // min[0] < min[1]
-            if (mins.length < 2) return [...mins, curr];
-            if (curr.distance < mins[0].distance) {
-              return [curr, mins[0]];
-            } else if (curr.distance < mins[1].distance) {
-              return [mins[0], curr];
-            }
-            return mins;
-          },
-          []
-        )
-        .sort((a, b) => a.stop_time.stop_sequence - b.stop_time.stop_sequence)
     );
-  }, [db?.stops, coords, visitedStops]);
+  }, [db?.stops, userCoords]);
+
+  const isInStation = useMemo(() => {
+    return closestStations?.find((st) => st.distance < 0.25); // km
+  }, [closestStations]);
 
   const { prevStation, nextStation, progressPercent } = useMemo(() => {
-    if (!stations) {
+    if (!closestStations) {
       return {
         prevStation: undefined,
         nextStation: undefined,
@@ -102,34 +138,43 @@ export function LiveLocation({
       };
     }
     return {
-      prevStation: stations[0],
-      nextStation: stations[1],
+      prevStation: closestStations[0],
+      nextStation: closestStations[1],
       progressPercent: Math.floor(
-        (stations[0].distance * 100) /
-          (stations[0].distance + stations[1].distance)
+        (closestStations[0].distance * 100) /
+          (closestStations[0].distance + closestStations[1].distance)
       ),
     };
-  }, [stations]);
+  }, [closestStations]);
 
-  const prevStationRef = useRef<HTMLDivElement>(null);
-  const stationListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!prevStationRef.current || !stationListRef.current) return;
+    if (
+      lastSnappedToStation &&
+      prevStation &&
+      prevStation.stop_time.stop_sequence <
+        lastSnappedToStation?.stop_time.stop_sequence
+    )
+      return;
+    setLastSnappedToStation(prevStation);
     stationListRef.current.scrollTo({
       left: prevStationRef.current.offsetLeft,
       behavior: 'smooth',
     });
-  }, [db, stations]);
+  }, [db, closestStations]);
 
   return (
     <>
       <Card className="mb-3">
         <Card.Header>Live location</Card.Header>
         <Card.Body className="d-flex flex-column gap-2 pb-1">
-          <span>
-            You are between {prevStation?.stop_name} and{' '}
-            {nextStation?.stop_name} ({progressPercent}%)
-          </span>
+          {!!isInStation && <span>You are in {isInStation.stop_name}</span>}
+          {!isInStation && (
+            <span>
+              You are between {prevStation?.stop_name} and{' '}
+              {nextStation?.stop_name} ({progressPercent}%).
+            </span>
+          )}
         </Card.Body>
         <div className="overflow-auto user-select-none" ref={stationListRef}>
           <div className="d-flex">
@@ -138,13 +183,6 @@ export function LiveLocation({
                 <div
                   key={stop.stop_id}
                   className="d-flex flex-column"
-                  onDoubleClick={() => {
-                    if (visitedStops.includes(stop.stop_id))
-                      setVisitedStops((s) =>
-                        s.filter((sid) => sid !== stop.stop_id)
-                      );
-                    else setVisitedStops((s) => [...s, stop.stop_id]);
-                  }}
                   style={{
                     height: '130px',
                   }}
@@ -177,11 +215,7 @@ export function LiveLocation({
                           : {}
                       }
                     ></div>
-                    {!visitedStops.includes(stop.stop_id) ? (
-                      <i className="inline-block bi-circle"></i>
-                    ) : (
-                      <i className="bi-check-circle"></i>
-                    )}
+                    <i className="inline-block bi-circle"></i>
                     <div
                       className="flex-fill"
                       style={
@@ -218,9 +252,6 @@ export function LiveLocation({
             </div>
           )}
         </div>
-        <Card.Footer>
-          <small>Double tap a station circle to mark it as visited.</small>
-        </Card.Footer>
       </Card>
       {prevStation && nextStation && (
         <Timetable
