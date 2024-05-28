@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Gtfs } from '../gtfs';
+import { Gtfs } from './gtfs';
 
 export const TripDataUpdaterContext = createContext({
   isUpdating: false,

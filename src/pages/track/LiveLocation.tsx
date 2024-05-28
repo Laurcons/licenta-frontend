@@ -8,6 +8,7 @@ import { CoordUtil } from '../../lib/coord.util';
 import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import { Timetable } from './Timetable';
+import { useLanguage } from '../../lib/lang.context';
 
 export function LiveLocation({
   trainNum,
@@ -19,6 +20,8 @@ export function LiveLocation({
   const [lastSnappedToStation, setLastSnappedToStation] = useState<
     (DxStop & { stop_time: DxStopTime }) | undefined
   >(undefined);
+
+  const { t } = useLanguage();
 
   const prevStationRef = useRef<HTMLDivElement>(null);
   const stationListRef = useRef<HTMLDivElement>(null);
@@ -166,13 +169,24 @@ export function LiveLocation({
   return (
     <>
       <Card className="mb-3">
-        <Card.Header>Live location</Card.Header>
+        <Card.Header>{t('track.live.title')}</Card.Header>
         <Card.Body className="d-flex flex-column gap-2 pb-1">
-          {!!isInStation && <span>You are in {isInStation.stop_name}</span>}
+          {
+            !!isInStation && (
+              <span>{t('track.live.youAreIn', isInStation.stop_name)}</span>
+            )
+            // <span>You are in {isInStation.stop_name}</span>
+          }
           {!isInStation && (
             <span>
-              You are between {prevStation?.stop_name} and{' '}
-              {nextStation?.stop_name} ({progressPercent}%).
+              {t(
+                'track.live.youAreBetween',
+                prevStation?.stop_name,
+                nextStation?.stop_name,
+                progressPercent
+              )}
+              {/* You are between {prevStation?.stop_name} and{' '}
+              {nextStation?.stop_name} ({progressPercent}%). */}
             </span>
           )}
         </Card.Body>

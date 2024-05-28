@@ -8,10 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       manifest: {
-        name: 'CFR Live PWA',
+        name: 'CFR Companion',
         short_name: 'cfr-live',
         description: 'Live application to view CFR information',
-        theme_color: '#ff2e2e',
+        theme_color: '#212529',
         icons: [
           {
             src: 'pwa-64x64.png',

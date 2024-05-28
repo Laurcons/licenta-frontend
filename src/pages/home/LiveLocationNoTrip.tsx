@@ -4,6 +4,7 @@ import { useGeolocated } from 'react-geolocated';
 import { gtfsdb } from '../../lib/dexie/dexie';
 import { useMemo } from 'react';
 import { CoordUtil } from '../../lib/coord.util';
+import { useLanguage } from '../../lib/lang.context';
 
 export function LiveLocationNoTrip() {
   const { coords } = useGeolocated({
@@ -12,6 +13,7 @@ export function LiveLocationNoTrip() {
     },
     watchPosition: true,
   });
+  const { t } = useLanguage();
 
   const stops = useLiveQuery(() => {
     return gtfsdb.stops.toArray();
@@ -34,11 +36,13 @@ export function LiveLocationNoTrip() {
     <>
       <Card className="mb-3">
         <Card.Body>
-          <h1 className="fs-3">Live location</h1>
-          You are near {closestStop?.stop_name} (
-          {Math.floor((closestStop?.distance ?? 0) * 1000)} m away), and your
-          position is accurate to within{' '}
-          {!!coords && Math.floor(coords?.accuracy * 100) / 100} m.
+          <h1 className="fs-3">{t('home.liveLocation.title')}</h1>
+          {t(
+            'home.liveLocation.youAreNear',
+            closestStop?.stop_name,
+            Math.floor((closestStop?.distance ?? 0) * 1000),
+            !!coords && Math.floor(coords?.accuracy * 100) / 100
+          )}
         </Card.Body>
       </Card>
     </>

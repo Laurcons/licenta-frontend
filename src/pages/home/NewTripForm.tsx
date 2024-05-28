@@ -6,6 +6,7 @@ import { DxUtils } from '../../lib/dexie/dx.utils';
 import { useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import useItineraryQuery from '../../lib/hooks/useItineraryQuery';
+import { useLanguage } from '../../lib/lang.context';
 
 export default function NewTripForm({
   onScanClick,
@@ -14,51 +15,54 @@ export default function NewTripForm({
 }) {
   const [trainNum, setTrainNum] = useState('');
   const [destinationId, setDestinationId] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const db = useItineraryQuery(trainNum);
 
   return (
     <Card className="mb-3">
       <Card.Body>
-        <h1 className="fs-2">New trip</h1>
-        <p>Where are we going?</p>
+        <h1 className="fs-2">{t('home.newTrip.title')}</h1>
+        <p>{t('home.newTrip.subtitle')}</p>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label>Train number:</Form.Label>
+            <Form.Label>{t('home.newTrip.trainNum')}</Form.Label>
             <Form.Control
               type="number"
-              placeholder="e.g. 2038"
+              placeholder={t('home.newTrip.trainNumPlaceholder')}
               value={trainNum}
               onChange={(ev) => setTrainNum(ev.target.value)}
             ></Form.Control>
             <small className="text-muted">
-              Enter the train number without letters
+              {t('home.newTrip.trainNumHelp')}
             </small>
           </Form.Group>
           <Collapse in={!!db?.route}>
             <div>
               <dl>
-                <dt>Train:</dt>
+                <dt>{t('home.newTrip.trainData.title')}</dt>
                 <dd>
                   {db?.trip.trip_short_name} {db?.trip.trip_id}{' '}
                   {db?.route.route_short_name}
                   <br />
-                  Depart
-                  {db &&
-                  DxUtils.timeToDayjs(
-                    db!.stopTimes[0].departure_time
-                  ).isBefore()
-                    ? 'ed'
-                    : 's'}{' '}
-                  today at{' '}
-                  {db &&
-                    DxUtils.timeToDayjs(db!.stopTimes[0].departure_time).format(
-                      'HH:mm'
-                    )}
+                  {t(
+                    db &&
+                      DxUtils.timeToDayjs(
+                        db!.stopTimes[0].departure_time
+                      ).isBefore()
+                      ? 'home.newTrip.trainData.departed'
+                      : 'home.newTrip.trainData.departs',
+                    db &&
+                      DxUtils.timeToDayjs(
+                        db!.stopTimes[0].departure_time
+                      ).format('HH:mm')
+                  )}
                 </dd>
               </dl>
               <Form.Group className="mb-3">
-                <Form.Label>Destination:</Form.Label>
+                <Form.Label>
+                  {t('home.newTrip.trainData.destination')}
+                </Form.Label>
                 <Form.Select
                   value={destinationId ?? 'none'}
                   onChange={(ev) =>
@@ -67,7 +71,9 @@ export default function NewTripForm({
                     )
                   }
                 >
-                  <option value="none">None</option>
+                  <option value="none">
+                    {t('home.newTrip.trainData.none')}
+                  </option>
                   {db?.stops
                     .filter((stop) => stop.stop_time?.stop_sequence !== 1)
                     .map((stop) => (
@@ -88,12 +94,12 @@ export default function NewTripForm({
             >
               <Button disabled={!db}>
                 <i className="bi-cursor me-2"></i>
-                Track this trip
+                {t('home.newTrip.trackBtn')}
               </Button>
             </LinkContainer>
             <Button variant="outline-primary" onClick={() => onScanClick?.()}>
               <i className="bi-camera me-2"></i>
-              Or scan ticket QR
+              {t('home.newTrip.scanBtn')}
             </Button>
           </div>
         </Form>

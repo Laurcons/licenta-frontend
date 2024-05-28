@@ -12,6 +12,7 @@ import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import LiveAnimation from './LiveAnimation';
 import { UserTrip } from '../../lib/dexie/models/user-trip';
 import useTripDataStatus from '../../lib/hooks/useTripDataStatus';
+import { useLanguage } from '../../lib/lang.context';
 
 export default function TrackPage() {
   const { trainNum } = useParams();
@@ -56,6 +57,7 @@ function ValidTrackPage({
   db: ReturnType<typeof useItineraryQuery>;
   userTrip?: UserTrip;
 }) {
+  const { t } = useLanguage();
   const destination = useLiveQuery(async () => {
     if (!destinationId) return undefined;
     const destStop = (await gtfsdb.stops.get(destinationId)) as DxStop;
@@ -95,16 +97,33 @@ function ValidTrackPage({
             <LiveAnimation />
           </div>
           <h1 className="fs-3">
-            Tracking train {db!.trip.trip_short_name} {db!.trip.trip_id}
+            {t(
+              'track.header.title',
+              db!.trip.trip_short_name,
+              db!.trip.trip_id
+            )}
+            {/* Tracking train {db!.trip.trip_short_name} {db!.trip.trip_id} */}
           </h1>
           <p>
-            From {db!.stops.at(0)?.stop_name} to {db!.stops.at(-1)?.stop_name}
+            {t(
+              'track.header.fromTo',
+              db!.stops.at(0)?.stop_name,
+              db!.stops.at(-1)?.stop_name
+            )}
+            {/* From {db!.stops.at(0)?.stop_name} to {db!.stops.at(-1)?.stop_name} */}
             {destination && (
               <>
                 <br />
-                You are traveling to {destination?.stop_name}
+                {t('track.header.destination', destination?.stop_name)}
+                {/* You are traveling to {destination?.stop_name} */}
                 {userTrip?.ticketDecodedInfo && (
-                  <> on ticket {userTrip.ticketDecodedInfo.serial}</>
+                  <>
+                    {t(
+                      'track.header.ticket',
+                      userTrip.ticketDecodedInfo.serial
+                    )}
+                  </>
+                  // <> on ticket {userTrip.ticketDecodedInfo.serial}</>
                 )}
               </>
             )}

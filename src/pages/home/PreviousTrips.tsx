@@ -2,8 +2,10 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Badge, Button, Card } from 'react-bootstrap';
 import { gtfsdb, localdb } from '../../lib/dexie/dexie';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useLanguage } from '../../lib/lang.context';
 
 export default function PreviousTrips() {
+  const { t } = useLanguage();
   const prevTrips = useLiveQuery(async () => {
     const trips = await localdb.userTrips
       .toArray()
@@ -52,10 +54,8 @@ export default function PreviousTrips() {
   return (
     <Card className="mb-3">
       <Card.Body>
-        <h1 className="fs-3">Previous trips</h1>
-        {prevTrips?.length === 0 && (
-          <p>Your previous trips will be displayed here.</p>
-        )}
+        <h1 className="fs-3">{t('home.previousTrips.title')}</h1>
+        {prevTrips?.length === 0 && <p>{t('home.previousTrips.empty')}</p>}
         {(prevTrips?.length ?? 0) > 0 && (
           <>
             {prevTrips!.map((trip) => (
@@ -68,13 +68,16 @@ export default function PreviousTrips() {
                     }}
                   >
                     <div className="d-flex flex-fill flex-column" role="button">
-                      <div>In {trip.date}</div>
+                      <div>{t('home.previousTrips.in', trip.date)}</div>
                       <div>
                         <Badge bg="primary" className="me-2">
                           {trip.gtfsTrip?.trip_short_name}{' '}
                           {trip.gtfsTrip?.trip_id}
                         </Badge>
-                        to {trip.gtfsDestination?.stop_name}
+                        {t(
+                          'home.previousTrips.to',
+                          trip.gtfsDestination?.stop_name
+                        )}
                       </div>
                     </div>
                   </LinkContainer>

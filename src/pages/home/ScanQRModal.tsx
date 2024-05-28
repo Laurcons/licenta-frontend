@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { TicketUtil } from '../../lib/ticket.util';
 import { localdb } from '../../lib/dexie/dexie';
 import dayjs from 'dayjs';
+import { useLanguage } from '../../lib/lang.context';
 
 export default function ScanQRModal({
   isOpen,
@@ -15,6 +16,7 @@ export default function ScanQRModal({
   // onScan?: (data: { trainNum: string; destinationId: string }) => void;
 }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   function decodeQrCode(rawCode: string) {
     try {
@@ -50,7 +52,7 @@ export default function ScanQRModal({
     <>
       <Modal show={isOpen} onHide={onClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Scan ticket QR code</Modal.Title>
+          <Modal.Title>{t('home.scan.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Scanner

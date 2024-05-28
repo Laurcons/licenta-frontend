@@ -5,6 +5,7 @@ import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import { DxUtils } from '../../lib/dexie/dx.utils';
 import { TimeWithDelay } from './TimeWithDelay';
 import dayjs from 'dayjs';
+import { useLanguage } from '../../lib/lang.context';
 
 export function Timetable({
   prevStation,
@@ -17,6 +18,7 @@ export function Timetable({
   progressPercent: number;
   destination?: DxStop & { stop_time: DxStopTime };
 }) {
+  const { t } = useLanguage();
   const prevTime = useMemo(
     () =>
       DxUtils.timeToDayjs(
@@ -79,7 +81,7 @@ export function Timetable({
   return (
     <>
       <Card>
-        <Card.Header>Timetable</Card.Header>
+        <Card.Header>{t('track.timetable.title')}</Card.Header>
         <Card.Body>
           <Table>
             <thead>
@@ -97,13 +99,15 @@ export function Timetable({
             </thead>
             <tbody>
               <tr>
-                <td>Timetabled</td>
+                <td>{t('track.timetable.timetabled')}</td>
+                {/* <td>Timetabled</td> */}
                 <td>{prevTime.format('HH:mm')}</td>
                 <td>{nextTime.format('HH:mm')}</td>
                 {destTime && <td>{destTime.format('HH:mm')}</td>}
               </tr>
               <tr>
-                <td>Expected</td>
+                <td>{t('track.timetable.expected')}</td>
+                {/* <td>Expected</td> */}
                 <td>
                   {/* <TimeWithDelay diff={actualPrevDiff} time={actualPrevTime} /> */}
                 </td>

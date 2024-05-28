@@ -1,13 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './pages/App';
 import './lib/dexie/dexie';
-import { gtfsdb } from './lib/dexie/dexie';
-import { Gtfs } from './lib/gtfs';
 import HomePage from './pages/home/HomePage';
 import TrackPage from './pages/track/TrackPage';
-import TripDataUpdaterProvider from './lib/hooks/TripDataUpdater';
+import TripDataUpdaterProvider from './lib/trip-data-updater.context';
+import { LangProvider } from './lib/lang.context';
 
 const router = createBrowserRouter([
   {
@@ -29,7 +27,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>
   <TripDataUpdaterProvider>
-    <RouterProvider router={router} />
+    <LangProvider>
+      <RouterProvider router={router} />
+    </LangProvider>
   </TripDataUpdaterProvider>
   // </React.StrictMode>
 );
