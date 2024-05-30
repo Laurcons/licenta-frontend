@@ -27,9 +27,6 @@ function App() {
           </LinkContainer>
           <Navbar.Toggle aria-controls="top-nav" />
           <Navbar.Collapse id="top-nav">
-            <LinkContainer to="/login">
-              <Nav.Link>{t('navbar.logIn')}</Nav.Link>
-            </LinkContainer>
             <div className="me-auto"></div>
             <ButtonGroup aria-label="Language select">
               <Button

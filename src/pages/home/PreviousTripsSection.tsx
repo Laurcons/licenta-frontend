@@ -4,7 +4,7 @@ import { gtfsdb, localdb } from '../../lib/dexie/dexie';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useLanguage } from '../../lib/lang.context';
 
-export default function PreviousTrips() {
+export default function PreviousTripsSection() {
   const { t } = useLanguage();
   const prevTrips = useLiveQuery(async () => {
     const trips = await localdb.userTrips

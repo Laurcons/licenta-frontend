@@ -8,7 +8,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import useItineraryQuery from '../../lib/hooks/useItineraryQuery';
 import { useLanguage } from '../../lib/lang.context';
 
-export default function NewTripForm({
+export default function NewTripFormSection({
   onScanClick,
 }: {
   onScanClick?: () => void;

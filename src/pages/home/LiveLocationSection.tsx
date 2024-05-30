@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { CoordUtil } from '../../lib/coord.util';
 import { useLanguage } from '../../lib/lang.context';
 
-export function LiveLocationNoTrip() {
+export function LiveLocationSection() {
   const { coords } = useGeolocated({
     positionOptions: {
       enableHighAccuracy: true,
