@@ -7,7 +7,10 @@ export default function LoginSection() {
     <>
       <Card className="mb-3">
         <Card.Body>
-          <p>Save your trip history with an account.</p>
+          <p>
+            Save your trip history with an account. Avoid remembering yet
+            another password by logging in with your favorite provider.
+          </p>
           <div className="d-flex flex-md-row flex-column align-items-center gap-3">
             <GoogleLoginButton />
             <YahooLoginButton />

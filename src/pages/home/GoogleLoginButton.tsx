@@ -19,7 +19,7 @@ export default function GoogleLoginButton() {
         }),
       });
       if (!resp.ok) {
-        console.error(resp);
+        alert('Something went wrong :(');
       }
     })();
   }

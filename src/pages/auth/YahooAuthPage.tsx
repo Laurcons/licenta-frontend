@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
-import { YahooCodeEvent } from '../../lib/yahoo-code-event';
 
 export default function YahooAuthPage() {
   const [query] = useSearchParams();
@@ -19,7 +18,9 @@ export default function YahooAuthPage() {
       window.location.href = `http://localhost:5173/auth/yahoo?code=${code}`;
       return;
     }
-    window.dispatchEvent(new YahooCodeEvent(code));
+    console.log('Dispatching event', code);
+    window.opener.postMessage({ type: 'yahoo-code', code }, '*');
+    window.close();
   });
 
   return (

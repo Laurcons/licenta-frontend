@@ -1,5 +1,4 @@
 import { config } from '../../lib/config';
-import { YahooCodeEvent } from '../../lib/yahoo-code-event';
 
 export default function YahooLoginButton() {
   function onLoginClick() {
@@ -20,9 +19,24 @@ export default function YahooLoginButton() {
       alert('Could not open Yahoo login. Please try again later');
       return;
     }
-    wnd.addEventListener('x-yahoo-login', (ev: Event) => {
-      const codeEvent = ev as YahooCodeEvent;
-      console.log('Logged in!', codeEvent.code, codeEvent);
+    window.addEventListener('message', (ev: MessageEvent) => {
+      console.log(ev);
+      if (ev.data && ev.data.type === 'yahoo-code') {
+        (async () => {
+          const resp = await fetch(config.apiBase + '/v1/auth/yahoo', {
+            method: 'POST',
+            body: JSON.stringify({
+              code: ev.data.code,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!resp.ok) {
+            alert('Something went wrong :(');
+          }
+        })();
+      }
     });
   }
 
@@ -34,30 +48,6 @@ export default function YahooLoginButton() {
         role="button"
         onClick={onLoginClick}
       />
-      {/* <div
-        role="button"
-        style={{
-          height: 40,
-          border: '2px solid #7e1fff',
-          borderRadius: '5px',
-          paddingRight: 25,
-          overflow: 'hidden',
-          fontSize: '0.85em',
-          fontWeight: 'bold',
-          fontFamily: 'Yahoo Sans',
-          minWidth: 200,
-        }}
-      >
-        <img
-          src="/yahoo-sign-in-logo.png"
-          style={{
-            height: 40,
-            marginTop: -2,
-            marginRight: 5,
-          }}
-        />
-        Sign in with Yahoo
-      </div> */}
     </>
   );
 }
