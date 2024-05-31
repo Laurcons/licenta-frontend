@@ -1,6 +1,10 @@
+import axios from 'axios';
 import { config } from '../../lib/config';
+import { useAuth } from '../../lib/hooks/useAuth';
 
 export default function YahooLoginButton() {
+  const { setToken } = useAuth();
+
   function onLoginClick() {
     const nonce = 'code-' + (Math.random() * 100000000).toString();
     const params = new URLSearchParams();
@@ -23,16 +27,20 @@ export default function YahooLoginButton() {
       console.log(ev);
       if (ev.data && ev.data.type === 'yahoo-code') {
         (async () => {
-          const resp = await fetch(config.apiBase + '/v1/auth/yahoo', {
-            method: 'POST',
-            body: JSON.stringify({
-              code: ev.data.code,
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          if (!resp.ok) {
+          try {
+            const resp = await axios.post(
+              config.apiBase + '/v1/auth/yahoo',
+              {
+                code: ev.data.code,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+            setToken(resp.data.authToken);
+          } catch (err: any) {
             alert('Something went wrong :(');
           }
         })();

@@ -13,11 +13,14 @@ import { Outlet } from 'react-router-dom';
 import useTripDataStatus from '../lib/hooks/useTripDataStatus';
 import { useTripDataUpdater } from '../lib/trip-data-updater.context';
 import { Language, useLanguage } from '../lib/lang.context';
+import { useAuth } from '../lib/hooks/useAuth';
 
 function App() {
   useTripDataUpdater();
   const { language, setLanguage, t } = useLanguage();
   const { isUpdating: isUpdatingTripData } = useTripDataStatus();
+  const { user, setToken } = useAuth();
+
   return (
     <>
       <Navbar expand="md" bg="dark" data-bs-theme="dark" className="text-light">
@@ -28,7 +31,15 @@ function App() {
           <Navbar.Toggle aria-controls="top-nav" />
           <Navbar.Collapse id="top-nav">
             <div className="me-auto"></div>
-            <ButtonGroup aria-label="Language select">
+            {!!user && (
+              <Nav className="flex gap-2">
+                <Nav.Item>{user.name}</Nav.Item>
+                <Nav.Item role="button" onClick={() => setToken(null)}>
+                  <i className="bi bi-box-arrow-right"></i>
+                </Nav.Item>
+              </Nav>
+            )}
+            <ButtonGroup aria-label="Language select" className="ms-3">
               <Button
                 size="sm"
                 variant={

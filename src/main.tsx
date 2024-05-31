@@ -7,6 +7,7 @@ import TrackPage from './pages/track/TrackPage';
 import TripDataUpdaterProvider from './lib/trip-data-updater.context';
 import { LangProvider } from './lib/lang.context';
 import YahooAuthPage from './pages/auth/YahooAuthPage';
+import { AuthProvider } from './lib/hooks/useAuth';
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>
   <TripDataUpdaterProvider>
     <LangProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </LangProvider>
   </TripDataUpdaterProvider>
   // </React.StrictMode>

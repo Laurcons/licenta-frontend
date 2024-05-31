@@ -1,24 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../../lib/lang.context';
 import { config } from '../../lib/config';
+import { useAuth } from '../../lib/hooks/useAuth';
+import axios from 'axios';
 
 export default function GoogleLoginButton() {
   const googleBtnRef = useRef(null);
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
   const { language, t } = useLanguage();
+  const { setToken } = useAuth();
 
   function validateWithApi(data: { credential: string }) {
     (async () => {
-      const resp = await fetch(`${config.apiBase}/v1/auth/google`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: data.credential,
-        }),
-      });
-      if (!resp.ok) {
+      try {
+        const resp = await axios.post(
+          `${config.apiBase}/v1/auth/google`,
+          {
+            token: data.credential,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        setToken(resp.data.authToken);
+      } catch (err: any) {
         alert('Something went wrong :(');
       }
     })();
