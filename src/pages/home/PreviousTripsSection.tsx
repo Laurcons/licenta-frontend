@@ -2,7 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Badge, Button, Card } from 'react-bootstrap';
 import { gtfsdb, localdb } from '../../lib/dexie/dexie';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
 
 export default function PreviousTripsSection() {
   const { t } = useLanguage();

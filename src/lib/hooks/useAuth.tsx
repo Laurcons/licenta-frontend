@@ -15,17 +15,22 @@ const AuthContext = createContext<{
   isLoading: boolean;
   token: string | null;
   setToken: (tok: string | null) => void;
+  showLoginModal: boolean;
+  setShowLoginModal: (show: boolean) => void;
 }>({
   user: null,
   isLoading: true,
   token: null,
   setToken: () => {},
+  showLoginModal: false,
+  setShowLoginModal: () => {},
 });
 
 export function AuthProvider(props: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -56,6 +61,7 @@ export function AuthProvider(props: PropsWithChildren) {
         // set user
         setUser(userResp.data.user);
         setIsLoading(false);
+        setShowLoginModal(false);
       } catch (err: any) {
         if (err instanceof AxiosError) {
           setToken(null);
@@ -82,6 +88,8 @@ export function AuthProvider(props: PropsWithChildren) {
     token,
     setToken: setTokenAndStorage,
     isLoading,
+    showLoginModal,
+    setShowLoginModal,
   };
   return (
     <AuthContext.Provider value={ctx}>{props.children}</AuthContext.Provider>

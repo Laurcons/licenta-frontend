@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { config } from '../../lib/config';
-import { useAuth } from '../../lib/hooks/useAuth';
+import { config } from '../config';
+import { useAuth } from '../hooks/useAuth';
 
 export default function YahooLoginButton() {
   const { setToken } = useAuth();

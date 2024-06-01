@@ -8,7 +8,7 @@ import { CoordUtil } from '../../lib/coord.util';
 import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import { Timetable } from './Timetable';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
 
 export function LiveLocation({
   trainNum,

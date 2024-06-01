@@ -1,12 +1,22 @@
-import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
-import { Button, Card, Collapse, Form } from 'react-bootstrap';
-import { gtfsdb } from '../../lib/dexie/dexie';
+import { Alert, Button, Card, Collapse, Form } from 'react-bootstrap';
 import { DxUtils } from '../../lib/dexie/dx.utils';
-import { useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import useItineraryQuery from '../../lib/hooks/useItineraryQuery';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
+import { useTripDataUpdater } from '../../lib/trip-data-updater';
+
+function IncompleteDataAlert() {
+  const { isUpdating, isFirstTime } = useTripDataUpdater();
+  if (!isUpdating || !isFirstTime) return null;
+  return (
+    <>
+      <Alert variant="danger">
+        Please wait while we download trip data for the first time...
+      </Alert>
+    </>
+  );
+}
 
 export default function NewTripFormSection({
   onScanClick,
@@ -24,6 +34,7 @@ export default function NewTripFormSection({
       <Card.Body>
         <h1 className="fs-2">{t('home.newTrip.title')}</h1>
         <p>{t('home.newTrip.subtitle')}</p>
+        <IncompleteDataAlert />
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>{t('home.newTrip.trainNum')}</Form.Label>

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { TicketUtil } from '../../lib/ticket.util';
 import { localdb } from '../../lib/dexie/dexie';
 import dayjs from 'dayjs';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
 
 export default function ScanQRModal({
   isOpen,

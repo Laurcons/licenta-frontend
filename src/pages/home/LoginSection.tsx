@@ -1,20 +1,16 @@
-import { Card } from 'react-bootstrap';
-import GoogleLoginButton from './GoogleLoginButton';
-import YahooLoginButton from './YahooLoginButton';
+import { Button, Card } from 'react-bootstrap';
+import { useAuth } from '../../lib/hooks/useAuth';
 
 export default function LoginSection() {
+  const { setShowLoginModal } = useAuth();
   return (
     <>
       <Card className="mb-3">
         <Card.Body>
-          <p>
-            Save your trip history with an account. Avoid remembering yet
-            another password by logging in with your favorite provider.
-          </p>
-          <div className="d-flex flex-md-row flex-column align-items-center gap-3">
-            <GoogleLoginButton />
-            <YahooLoginButton />
-          </div>
+          <p>Save your trips with an one-click account.</p>
+          <Button onClick={() => setShowLoginModal(true)}>
+            Log in or create account
+          </Button>
         </Card.Body>
       </Card>
     </>

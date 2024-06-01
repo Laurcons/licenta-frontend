@@ -5,7 +5,7 @@ import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import { DxUtils } from '../../lib/dexie/dx.utils';
 import { TimeWithDelay } from './TimeWithDelay';
 import dayjs from 'dayjs';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
 
 export function Timetable({
   prevStation,

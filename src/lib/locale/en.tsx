@@ -52,4 +52,7 @@ export default {
       expected: 'Expected',
     },
   },
+  loginModal: {
+    title: 'Access your account',
+  },
 };

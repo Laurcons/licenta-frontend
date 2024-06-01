@@ -11,8 +11,8 @@ import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import LiveAnimation from './LiveAnimation';
 import { UserTrip } from '../../lib/dexie/models/user-trip';
-import useTripDataStatus from '../../lib/hooks/useTripDataStatus';
-import { useLanguage } from '../../lib/lang.context';
+import { useLanguage } from '../../lib/language';
+import { useTripDataUpdater } from '../../lib/trip-data-updater';
 
 export default function TrackPage() {
   const { trainNum } = useParams();
@@ -146,7 +146,7 @@ function ErrorBackButton() {
 }
 
 function IncorrectTrainNum({ trainNum }: { trainNum?: string }) {
-  const { isUpdating } = useTripDataStatus();
+  const { isUpdating } = useTripDataUpdater();
   return (
     <>
       <ErrorBackButton />

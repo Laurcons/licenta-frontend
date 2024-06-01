@@ -37,7 +37,6 @@ type Join<T extends string[], D extends string> = T extends []
     : never
   : string;
 type DottedLanguageObjectStringPaths = Join<PathsToStringProps<typeof en>, '.'>;
-7;
 
 export const LangContext = createContext<{
   language: Language;

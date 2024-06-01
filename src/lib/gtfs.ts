@@ -8,17 +8,25 @@ export class Gtfs {
   static #axios = new Axios({
     baseURL: config.apiBase,
   });
+  static files: (keyof GtfsFileNameMap)[] = [
+    'agency',
+    'calendar',
+    'calendar_dates',
+    'routes',
+    'stop_times',
+    'stops',
+    'trips',
+  ];
 
-  static async updateTripData() {
-    const files: (keyof GtfsFileNameMap)[] = [
-      'agency',
-      'calendar',
-      'calendar_dates',
-      'routes',
-      'stop_times',
-      'stops',
-      'trips',
-    ];
+  static async isFirstTimeDownload() {
+    const lastFileName = this.files.at(-1);
+    const setting = await localdb.settings.get(`lastUpdate-${lastFileName}`);
+    return !setting;
+  }
+
+  static async updateTripData(
+    onDownloadDecision?: (decision: boolean) => void
+  ) {
     const transform: Partial<
       Record<keyof GtfsFileNameMap, Record<string, (v: string) => any>>
     > = {
@@ -30,7 +38,8 @@ export class Gtfs {
         stop_lon: parseFloat,
       },
     };
-    for (const fileName of files) {
+    let isDownloadingAnything = false;
+    for (const fileName of this.files) {
       let data: AxiosResponse;
       try {
         data = await this.#axios.get<string>(`/trip-data-gtfs/${fileName}.txt`);
@@ -47,6 +56,10 @@ export class Gtfs {
       ) {
         console.log('Skipping, cached');
         continue;
+      }
+      if (!isDownloadingAnything) {
+        isDownloadingAnything = true;
+        onDownloadDecision?.(true);
       }
       const transformer = (header: string) =>
         transform[fileName]?.[header] ?? ((v: string) => v);
@@ -70,6 +83,9 @@ export class Gtfs {
         key: `lastUpdate-${fileName}`,
         value: data.headers['last-modified'],
       });
+    }
+    if (!isDownloadingAnything) {
+      onDownloadDecision?.(false);
     }
     console.log('GTFS data updated');
   }

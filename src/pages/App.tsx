@@ -10,16 +10,27 @@ import {
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Outlet } from 'react-router-dom';
-import useTripDataStatus from '../lib/hooks/useTripDataStatus';
-import { useTripDataUpdater } from '../lib/trip-data-updater.context';
-import { Language, useLanguage } from '../lib/lang.context';
+import { useTripDataUpdater } from '../lib/trip-data-updater';
+import { Language, useLanguage } from '../lib/language';
 import { useAuth } from '../lib/hooks/useAuth';
+import LoginModal from '../lib/login-modal/LoginModal';
+import { useEffect } from 'react';
 
 function App() {
   useTripDataUpdater();
   const { language, setLanguage, t } = useLanguage();
-  const { isUpdating: isUpdatingTripData } = useTripDataStatus();
-  const { user, setToken } = useAuth();
+  const { isUpdating: isUpdatingTripData, startUpdate: startTripDataUpdate } =
+    useTripDataUpdater();
+  const {
+    user,
+    setToken,
+    isLoading: isUserLoading,
+    setShowLoginModal,
+  } = useAuth();
+
+  useEffect(() => {
+    startTripDataUpdate();
+  }, []);
 
   return (
     <>
@@ -38,6 +49,13 @@ function App() {
                   <i className="bi bi-box-arrow-right"></i>
                 </Nav.Item>
               </Nav>
+            )}
+            {!isUserLoading && !user && (
+              <>
+                <Nav.Item role="button" onClick={() => setShowLoginModal(true)}>
+                  <i className="bi bi-box-arrow-in-right"></i>
+                </Nav.Item>
+              </>
             )}
             <ButtonGroup aria-label="Language select" className="ms-3">
               <Button
@@ -71,6 +89,7 @@ function App() {
         )}
         <Outlet />
       </div>
+      <LoginModal />
     </>
   );
 }
