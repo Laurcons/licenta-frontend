@@ -3,8 +3,8 @@ import { Alert, Button, Card, Collapse, Form } from 'react-bootstrap';
 import { DxUtils } from '../../lib/dexie/dx.utils';
 import { LinkContainer } from 'react-router-bootstrap';
 import useItineraryQuery from '../../lib/hooks/useItineraryQuery';
-import { useLanguage } from '../../lib/language';
-import { useTripDataUpdater } from '../../lib/trip-data-updater';
+import { useLanguage } from '../../lib/language.context';
+import { useTripDataUpdater } from '../../lib/trip-data-updater.context';
 
 function IncompleteDataAlert() {
   const { isUpdating, isFirstTime } = useTripDataUpdater();

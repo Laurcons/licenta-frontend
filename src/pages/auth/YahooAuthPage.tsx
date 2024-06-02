@@ -18,7 +18,6 @@ export default function YahooAuthPage() {
       window.location.href = `http://localhost:5173/auth/yahoo?code=${code}`;
       return;
     }
-    console.log('Dispatching event', code);
     window.opener.postMessage({ type: 'yahoo-code', code }, '*');
     window.close();
   });

@@ -1,13 +1,10 @@
-import { Axios, AxiosResponse } from 'axios';
-import { config } from './config';
-import { GtfsDatabase, GtfsFileNameMap, gtfsdb, localdb } from './dexie/dexie';
+import axios, { AxiosResponse } from 'axios';
+import { GtfsFileNameMap, gtfsdb, localdb } from './dexie/dexie';
 import dayjs from 'dayjs';
 import { parse as csvParse } from 'csv-parse/browser/esm/sync';
+import { config } from './config';
 
 export class Gtfs {
-  static #axios = new Axios({
-    baseURL: config.apiBase,
-  });
   static files: (keyof GtfsFileNameMap)[] = [
     'agency',
     'calendar',
@@ -40,13 +37,12 @@ export class Gtfs {
     };
     let isDownloadingAnything = false;
     for (const fileName of this.files) {
-      let data: AxiosResponse;
-      try {
-        data = await this.#axios.get<string>(`/trip-data-gtfs/${fileName}.txt`);
-      } catch (err) {
-        console.error(err);
-        break;
-      }
+      let data: AxiosResponse<string>;
+      // try {
+      data = await axios.get<string>(`/trip-data-gtfs/${fileName}.txt`, {
+        baseURL: config.apiBase,
+      });
+      // } catch (err: any) {}
       const lastUpdateSett = await localdb.settings.get(
         `lastUpdate-${fileName}`
       );
@@ -73,7 +69,6 @@ export class Gtfs {
             {}
           )
       );
-      console.log({ lines });
       console.log(`Adding ${fileName}`);
       await gtfsdb.table(fileName).clear();
       await gtfsdb.table(fileName).bulkPut(lines, { allKeys: true });

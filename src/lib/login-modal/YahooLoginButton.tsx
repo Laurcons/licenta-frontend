@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { config } from '../config';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../auth.context';
 
 export default function YahooLoginButton() {
   const { setToken } = useAuth();
@@ -24,7 +24,6 @@ export default function YahooLoginButton() {
       return;
     }
     window.addEventListener('message', (ev: MessageEvent) => {
-      console.log(ev);
       if (ev.data && ev.data.type === 'yahoo-code') {
         (async () => {
           try {

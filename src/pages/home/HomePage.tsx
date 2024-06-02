@@ -3,18 +3,18 @@ import { LiveLocationSection } from './LiveLocationSection';
 import NewTripFormSection from './NewTripFormSection';
 import PreviousTripsSection from './PreviousTripsSection';
 import ScanQRModal from './ScanQRModal';
-import { useAuth } from '../../lib/hooks/useAuth';
+import { useAuth } from '../../lib/auth.context';
 import LoginSection from './LoginSection';
 
 export default function HomePage() {
   const [isScanningQr, setIsScanningQr] = useState(false);
-  const { user, isLoading: isUserLoading } = useAuth();
+  const { user, isLoading: isUserLoading, hasInternet } = useAuth();
 
   return (
     <>
       <LiveLocationSection />
       <NewTripFormSection onScanClick={() => setIsScanningQr(true)} />
-      {!isUserLoading && !user && <LoginSection />}
+      {!isUserLoading && !user && hasInternet && <LoginSection />}
       <PreviousTripsSection />
       <ScanQRModal
         isOpen={isScanningQr}

@@ -1,8 +1,8 @@
 import { Modal } from 'react-bootstrap';
 import GoogleLoginButton from './GoogleLoginButton';
 import YahooLoginButton from './YahooLoginButton';
-import { useLanguage } from '../language';
-import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../language.context';
+import { useAuth } from '../auth.context';
 
 export default function LoginModal() {
   const { t } = useLanguage();

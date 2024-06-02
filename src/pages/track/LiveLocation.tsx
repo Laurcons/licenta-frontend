@@ -8,7 +8,7 @@ import { CoordUtil } from '../../lib/coord.util';
 import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import { Timetable } from './Timetable';
-import { useLanguage } from '../../lib/language';
+import { useLanguage } from '../../lib/language.context';
 
 export function LiveLocation({
   trainNum,
@@ -68,12 +68,6 @@ export function LiveLocation({
   const closestStations = useMemo(() => {
     if (!db?.stops?.length) return;
     if (!userCoords) return;
-    console.log(
-      db.stops.reduce(
-        (lines, stop) => lines + `[${stop.stop_lat},${stop.stop_lon}],\n`,
-        ''
-      )
-    );
     return (
       db.stops
         .slice() // make copy that we can sort
@@ -110,9 +104,6 @@ export function LiveLocation({
         // we do not care about the .last element
         .pairings // now find the pairing with the smallest distance and return it
         .reduce((minPairing, pairing) => {
-          console.log(
-            `leg ${pairing.pair[0].stop_name} to ${pairing.pair[1].stop_name} distance ${pairing.dist}`
-          );
           if (pairing.dist < minPairing.dist) return pairing;
           return minPairing;
         })

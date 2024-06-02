@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLanguage } from '../language';
+import { useLanguage } from '../language.context';
 import { config } from '../config';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../auth.context';
 import axios from 'axios';
 
 export default function GoogleLoginButton() {

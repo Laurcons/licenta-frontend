@@ -1,16 +1,26 @@
 import { Button, Card } from 'react-bootstrap';
-import { useAuth } from '../../lib/hooks/useAuth';
+import { useAuth } from '../../lib/auth.context';
 
 export default function LoginSection() {
-  const { setShowLoginModal } = useAuth();
+  const { setShowLoginModal, hasInternet } = useAuth();
   return (
     <>
       <Card className="mb-3">
         <Card.Body>
           <p>Save your trips with an one-click account.</p>
-          <Button onClick={() => setShowLoginModal(true)}>
-            Log in or create account
-          </Button>
+          {hasInternet && (
+            <Button onClick={() => setShowLoginModal(true)}>
+              Log in or create account
+            </Button>
+          )}
+          {!hasInternet && (
+            <>
+              <p>
+                <i className="bi bi-wifi-off me-2"></i>
+                Please check back again when you're connected.
+              </p>
+            </>
+          )}
         </Card.Body>
       </Card>
     </>

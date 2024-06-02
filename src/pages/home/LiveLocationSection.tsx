@@ -4,7 +4,7 @@ import { useGeolocated } from 'react-geolocated';
 import { gtfsdb } from '../../lib/dexie/dexie';
 import { useMemo } from 'react';
 import { CoordUtil } from '../../lib/coord.util';
-import { useLanguage } from '../../lib/language';
+import { useLanguage } from '../../lib/language.context';
 
 export function LiveLocationSection() {
   const { coords } = useGeolocated({

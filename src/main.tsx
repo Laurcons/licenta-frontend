@@ -4,10 +4,10 @@ import App from './pages/App';
 import './lib/dexie/dexie';
 import HomePage from './pages/home/HomePage';
 import TrackPage from './pages/track/TrackPage';
-import TripDataUpdaterProvider from './lib/trip-data-updater';
-import { LangProvider } from './lib/language';
+import TripDataUpdaterProvider from './lib/trip-data-updater.context';
+import { LangProvider } from './lib/language.context';
 import YahooAuthPage from './pages/auth/YahooAuthPage';
-import { AuthProvider } from './lib/hooks/useAuth';
+import { AuthProvider } from './lib/auth.context';
 
 const router = createBrowserRouter([
   {

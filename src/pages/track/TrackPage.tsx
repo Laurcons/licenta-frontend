@@ -11,8 +11,8 @@ import { DxStop } from '../../lib/dexie/models/dx-stop';
 import { DxStopTime } from '../../lib/dexie/models/dx-stopTime';
 import LiveAnimation from './LiveAnimation';
 import { UserTrip } from '../../lib/dexie/models/user-trip';
-import { useLanguage } from '../../lib/language';
-import { useTripDataUpdater } from '../../lib/trip-data-updater';
+import { useLanguage } from '../../lib/language.context';
+import { useTripDataUpdater } from '../../lib/trip-data-updater.context';
 
 export default function TrackPage() {
   const { trainNum } = useParams();
