@@ -4,7 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Outlet } from 'react-router-dom';
 import { Language, useLanguage } from '../lib/language.context';
 import { useAuth } from '../lib/auth.context';
-import LoginModal from '../lib/login-modal/LoginModal';
+import LoginModal from '../components/login-modal/LoginModal';
 import NotConnectedBanner from './NotConnectedBanner';
 import UpdatingTripDataBanner from './UpdatingTripDataBanner';
 

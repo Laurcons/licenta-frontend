@@ -53,7 +53,12 @@ declare global {
           }) => void;
           renderButton: (
             elem: HTMLElement,
-            options: { locale: string; theme: string; size: string }
+            options: Partial<{
+              locale: string;
+              theme: string;
+              size: string;
+              click_listener: () => void;
+            }>
           ) => void;
           prompt: () => void;
         };

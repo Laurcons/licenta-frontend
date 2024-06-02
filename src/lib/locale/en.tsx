@@ -54,5 +54,6 @@ export default {
   },
   loginModal: {
     title: 'Access your account',
+    text: 'Save your trip history with an account. Avoid remembering yet another password by logging in with your favorite provider.',
   },
 };

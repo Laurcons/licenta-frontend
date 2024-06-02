@@ -1,8 +1,12 @@
 import axios from 'axios';
-import { config } from '../config';
-import { useAuth } from '../auth.context';
+import { config } from '../../lib/config';
+import { useAuth } from '../../lib/auth.context';
 
-export default function YahooLoginButton() {
+export default function YahooLoginButton({
+  onStatus,
+}: {
+  onStatus?: (status: string) => void;
+}) {
   const { setToken } = useAuth();
 
   function onLoginClick() {
@@ -27,6 +31,7 @@ export default function YahooLoginButton() {
       if (ev.data && ev.data.type === 'yahoo-code') {
         (async () => {
           try {
+            onStatus?.('Signing you in...');
             const resp = await axios.post(
               config.apiBase + '/v1/auth/yahoo',
               {
@@ -41,6 +46,8 @@ export default function YahooLoginButton() {
             setToken(resp.data.authToken);
           } catch (err: any) {
             alert('Something went wrong :(');
+          } finally {
+            onStatus?.('');
           }
         })();
       }

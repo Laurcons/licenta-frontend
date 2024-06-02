@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLanguage } from '../language.context';
-import { config } from '../config';
-import { useAuth } from '../auth.context';
+import { useLanguage } from '../../lib/language.context';
+import { config } from '../../lib/config';
+import { useAuth } from '../../lib/auth.context';
 import axios from 'axios';
 
-export default function GoogleLoginButton() {
+export default function GoogleLoginButton({
+  onStatus,
+}: {
+  onStatus?: (status: string) => void;
+}) {
   const googleBtnRef = useRef(null);
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
   const { language, t } = useLanguage();
@@ -13,6 +17,7 @@ export default function GoogleLoginButton() {
   function validateWithApi(data: { credential: string }) {
     (async () => {
       try {
+        onStatus?.('Signing you in...');
         const resp = await axios.post(
           `${config.apiBase}/v1/auth/google`,
           {
@@ -27,6 +32,8 @@ export default function GoogleLoginButton() {
         setToken(resp.data.authToken);
       } catch (err: any) {
         alert('Something went wrong :(');
+      } finally {
+        onStatus?.('');
       }
     })();
   }
