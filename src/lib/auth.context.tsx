@@ -82,13 +82,13 @@ export function AuthProvider(props: PropsWithChildren) {
         (error.response && error.response.status === 502) ||
         !error.response
       ) {
-        // server on, api unavailable (502 Bad Gateway) OR
+        // has internet, api unavailable (502 Bad Gateway) OR
         // server unreachable (server off / no internet)
         setHasInternet(false);
         setUser(null);
       }
     }
-    return error;
+    throw error;
   }
 
   function tryAuth() {
