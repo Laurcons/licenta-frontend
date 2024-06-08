@@ -86,17 +86,19 @@ export function AuthProvider(props: PropsWithChildren) {
         // server unreachable (server off / no internet)
         setHasInternet(false);
         setUser(null);
+      } else {
+        setHasInternet(true);
       }
     }
     throw error;
   }
 
   function tryAuth() {
-    if (!token) {
-      setUser(null);
-      setIsLoading(false);
-      return;
-    }
+    // if (!token) {
+    //   setUser(null);
+    //   setIsLoading(false);
+    //   return;
+    // }
     (async () => {
       // try to use token
       try {
@@ -151,7 +153,7 @@ export function AuthProvider(props: PropsWithChildren) {
     showLoginModal,
     setShowLoginModal,
     axios,
-    hasInternet,
+    hasInternet: navigator.onLine ? hasInternet : false,
     retryAuth: tryAuth,
     handleAxiosError,
   };
