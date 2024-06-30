@@ -89,6 +89,9 @@ export function AuthProvider(props: PropsWithChildren) {
       } else {
         setHasInternet(true);
       }
+      if (error.response?.data.message === 'Unauthorized') {
+        setUser(null);
+      }
     }
     throw error;
   }

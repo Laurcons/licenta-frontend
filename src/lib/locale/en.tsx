@@ -1,7 +1,6 @@
 export default {
   navbar: {
     title: 'CFR Companion',
-    logIn: 'Log in',
   },
   home: {
     scan: {
@@ -32,6 +31,11 @@ export default {
       empty: 'Your previous trips will be displayed here.',
       in: 'In $1',
       to: 'to $1',
+    },
+    loginSection: {
+      promo: 'Save your trips with an one-click account.',
+      button: 'Log in or create account',
+      notConnected: "Please check back again when you're connected.",
     },
   },
   track: {

@@ -24,6 +24,7 @@ function App() {
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>
+              <img src="/logo-light.svg" height="20" className="me-3" />
               {t('navbar.title')}
               {!hasInternet && (
                 <>

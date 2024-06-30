@@ -1,7 +1,6 @@
 export default {
   navbar: {
     title: 'Companionul CFR',
-    logIn: 'Intră în cont',
   },
   home: {
     scan: {
@@ -33,6 +32,11 @@ export default {
       in: 'În $1',
       to: 'spre $1',
     },
+    loginSection: {
+      promo: 'Salvează-ți călătoriile cu un cont și un singur click.',
+      button: 'Întră în cont sau creează unul',
+      notConnected: 'Încearcă iar când ești conectat.',
+    },
   },
   track: {
     header: {
@@ -51,5 +55,9 @@ export default {
       timetabled: 'După orar',
       expected: 'Estimat',
     },
+  },
+  loginModal: {
+    title: 'Accesează-ți contul',
+    text: 'Salvează-ți istoricul călătoriilor cu un cont. Evită să ții minte încă o parolă prin a te autentifica cu serviciul preferat.',
   },
 };
